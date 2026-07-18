@@ -119,14 +119,17 @@ return {
     "nvim-tree/nvim-tree.lua",
     dependencies = "nvim-tree/nvim-web-devicons",
     keys = {
-      { "<leader>e", ":NvimTreeToggle<CR>", silent = true, desc = "Explorer" },
-      { "<leader>tj", ":NvimTreeFocus<CR>", silent = true, desc = "Focus explorer" },
+      { "<leader>e", ":NvimTreeFindFileToggle<CR>", silent = true, desc = "Explorer" },
+      { "<leader>tj", ":NvimTreeFindFile<CR>", silent = true, desc = "Focus explorer" },
     },
     init = function()
       vim.g.loaded_netrw = 1
       vim.g.loaded_netrwPlugin = 1
     end,
-    opts = {},
+    -- 打开侧栏定位到当前文件；切换 buffer 时树内高亮跟随
+    opts = {
+      update_focused_file = { enable = true },
+    },
   },
 
   -- 终端

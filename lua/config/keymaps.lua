@@ -35,6 +35,7 @@ map("v", ">", ">gv", opts)
 vim.api.nvim_create_user_command("Config", function()
   require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
 end, { desc = "Browse nvim config files" })
+map("n", "<leader>sc", ":Config<CR>", { desc = "Config files", silent = true })
 
 map("n", "<leader>gv", "ggVG", { desc = "Select all" })
 map("n", "<leader>h", ":nohlsearch<CR>", { desc = "Clear highlight", silent = true })
