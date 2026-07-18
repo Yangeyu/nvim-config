@@ -20,10 +20,9 @@ return {
     end,
   },
 
-  -- 图片预览：自研插件，iTerm2 原生图片协议渲染（本地路径引用，换机前需先推 GitHub）
+  -- 图片预览：自研插件，iTerm2 原生图片协议渲染
   {
-    dir = "/Users/yang/Workplace/vim-plugins/iterm-image.nvim",
-    name = "iterm-image.nvim",
+    "Yangeyu/iterm-image.nvim",
     ft = "markdown",
     opts = {},
   },

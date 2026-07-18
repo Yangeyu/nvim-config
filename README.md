@@ -48,6 +48,3 @@ after/ftplugin/       按文件类型微调的落点
 - 新增插件 = 在对应领域文件加一段 spec;删插件 = 删那一段,无需其他登记。
 - 升级是显式动作:`:Lazy update` 后提交 `lazy-lock.json`。
 
-## 已知事项
-
-- `iterm-image.nvim` 目前是本地路径引用(`~/Workplace/vim-plugin/iterm-image.nvim`),换机前需先推 GitHub 并改为仓库引用。

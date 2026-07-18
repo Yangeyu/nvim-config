@@ -8,6 +8,8 @@ return {
       vim.cmd.colorscheme("catppuccin-mocha")
     end,
   },
+  { "ayu-theme/ayu-vim", lazy = true },
+  { "nyoom-engineering/oxocarbon.nvim", lazy = true },
   { "EdenEast/nightfox.nvim", lazy = true },
   { "rebelot/kanagawa.nvim", lazy = true },
   { "rose-pine/neovim", name = "rose-pine", lazy = true },
@@ -121,6 +123,18 @@ return {
       hide_target_hack = true,
       never_draw_over_target = true,
     },
+  },
+
+  -- 颜色值内联着色（#RRGGBB / rgb() / hsl()）
+  {
+    "norcalli/nvim-colorizer.lua",
+    ft = { "css", "scss", "html", "javascript", "typescript", "vue" },
+    config = function()
+      require("colorizer").setup({ "css", "scss", "html", "javascript", "typescript", "vue" }, {
+        RGB = true, RRGGBB = true, RRGGBBAA = true,
+        rgb_fn = true, hsl_fn = true, css = true, css_fn = true,
+      })
+    end,
   },
 
   -- 同词高亮
