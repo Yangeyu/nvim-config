@@ -20,8 +20,15 @@ map("n", "<C-j>", "<C-w>j", opts)
 map("n", "<C-k>", "<C-w>k", opts)
 map("n", "<C-l>", "<C-w>l", opts)
 
--- 粘贴最近一次 yank（不被 delete 污染）
-map({ "n", "v" }, "<leader>pp", '"0p', opts)
+-- 包管理：<leader>p 分组，子键与 lvim 的 Plugins 组对齐
+map("n", "<leader>pi", ":Lazy install<CR>", { desc = "Install", silent = true })
+map("n", "<leader>ps", ":Lazy sync<CR>", { desc = "Sync", silent = true })
+map("n", "<leader>pS", ":Lazy home<CR>", { desc = "Status", silent = true })
+map("n", "<leader>pc", ":Lazy clean<CR>", { desc = "Clean", silent = true })
+map("n", "<leader>pu", ":Lazy update<CR>", { desc = "Update", silent = true })
+map("n", "<leader>pp", ":Lazy profile<CR>", { desc = "Profile", silent = true })
+map("n", "<leader>pl", ":Lazy log<CR>", { desc = "Log", silent = true })
+map("n", "<leader>pd", ":Lazy debug<CR>", { desc = "Debug", silent = true })
 
 -- 选区直接转为搜索 / 统计选区字数
 map("v", "<leader>f", 'y/<C-r>"<CR>', opts)

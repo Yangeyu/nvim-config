@@ -67,21 +67,42 @@ return {
         local reg = vim.fn.reg_recording()
         return reg == "" and "" or ("● REC @" .. reg)
       end
+      -- 与 lvim 对齐：无客户端显示 "LSP Inactive"，否则 "[名字, 名字]"，
+      -- 并把 conform 的格式化器一并列出（对应 lvim 列 null-ls 格式化器的行为）
       local function lsp_names()
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
+        if #clients == 0 then
+          return "LSP Inactive"
+        end
         local names = {}
-        for _, c in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+        for _, c in ipairs(clients) do
           names[#names + 1] = c.name
         end
-        return table.concat(names, ",")
+        local ok, conform = pcall(require, "conform")
+        if ok then
+          for _, f in ipairs(conform.list_formatters(0)) do
+            if not vim.tbl_contains(names, f.name) then
+              names[#names + 1] = f.name
+            end
+          end
+        end
+        return "[" .. table.concat(names, ", ") .. "]"
       end
       require("lualine").setup({
-        options = { theme = "catppuccin", globalstatus = true },
+        -- 新版 catppuccin 的 lualine 主题名为 catppuccin-nvim（跟随当前 flavour）
+        -- 分隔符置空与 lvim 对齐（去掉默认的 powerline 尖角/三角）
+        options = {
+          theme = "catppuccin-nvim",
+          globalstatus = true,
+          component_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
+        },
         sections = {
           lualine_c = { "filename" },
           lualine_x = {
             { recording, color = { fg = "#ff5555", gui = "bold" } },
             "diagnostics",
-            { lsp_names, icon = "" },
+            { lsp_names, color = { gui = "bold" } },
             "filetype",
           },
         },
@@ -129,6 +150,17 @@ return {
     -- 打开侧栏定位到当前文件；切换 buffer 时树内高亮跟随
     opts = {
       update_focused_file = { enable = true },
+      -- 树内换根（"-" 上探等）不再联动 :cd，cwd 始终钉在项目根；
+      -- 否则 getcwd 跟着漂移，"=" 的还原会失效，telescope 搜索根也会被带跑
+      actions = { change_dir = { enable = false } },
+      -- "-" 上探父目录后，"=" 回到项目根目录
+      on_attach = function(bufnr)
+        local api = require("nvim-tree.api")
+        api.config.mappings.default_on_attach(bufnr)
+        vim.keymap.set("n", "=", function()
+          api.tree.change_root(vim.fn.getcwd())
+        end, { buffer = bufnr, desc = "nvim-tree: Back to project root" })
+      end,
     },
   },
 
@@ -138,6 +170,27 @@ return {
     keys = {
       { "<leader>tt", ":ToggleTerm direction=float<CR>", silent = true, desc = "Terminal float" },
       { "<leader>tv", ":ToggleTerm direction=vertical size=70<CR>", silent = true, desc = "Terminal vertical" },
+      -- 与 lvim 对齐：<leader>gg 全屏展开 lazygit
+      {
+        "<leader>gg",
+        function()
+          local Terminal = require("toggleterm.terminal").Terminal
+          _G.__lazygit_term = _G.__lazygit_term
+            or Terminal:new({
+              cmd = "lazygit",
+              direction = "float",
+              hidden = true,
+              float_opts = {
+                border = "none",
+                width = function() return vim.o.columns end,
+                height = function() return vim.o.lines end,
+              },
+            })
+          _G.__lazygit_term:toggle()
+        end,
+        silent = true,
+        desc = "Lazygit",
+      },
     },
     opts = { open_mapping = false },
   },
@@ -209,13 +262,14 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
+      icons = { mappings = false },
       spec = {
         { "<leader>g", group = "git" },
         { "<leader>l", group = "lsp" },
+        { "<leader>p", group = "plugins" },
         { "<leader>s", group = "search" },
         { "<leader>S", group = "session" },
         { "<leader>t", group = "terminal/tree" },
-        { "<leader>C", group = "ai" },
       },
     },
   },
