@@ -19,10 +19,6 @@ nvim
 
 其余按需:`deno`(denols)、`go` 工具链(gopls/gofumpt/golines)、`node`(多数前端 LSP 的运行时)。
 
-## 环境变量
-
-- `DASHSCOPE_API_KEY` — codecompanion 的通义千问 API key(不入库)。
-
 ## 目录结构
 
 ```
@@ -38,7 +34,7 @@ lua/plugins/          每文件一个领域,返回 lazy spec,自动 import:
   finder              telescope 全家 + grug-far
   git                 gitsigns + diffview
   markdown            render-markdown + iterm-image + json-expand
-  ai                  windsurf(codeium) + codecompanion
+  ai                  windsurf(codeium)
 after/ftplugin/       按文件类型微调的落点
 ```
 
