@@ -11,7 +11,7 @@ brew install neovim ripgrep fd jq
 brew install --cask font-comic-shanns-mono-nerd-font font-symbols-only-nerd-font
 
 # 2. 配置本体
-git clone <this-repo> ~/.config/nvim
+git clone https://github.com/Yangeyu/nvim-config.git ~/.config/nvim
 
 # 3. 首次启动:lazy 按 lock 还原插件,mason 自动安装 LSP,treesitter 编译 parser
 nvim
