@@ -75,7 +75,7 @@ return {
         exclude_filetypes = { alpha = true, NvimTree = true },
       },
       indent = {
-        enable = true,
+        enable = false,
         chars = { "▏" },
         exclude_filetypes = { alpha = true, NvimTree = true },
       },
