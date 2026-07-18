@@ -170,7 +170,6 @@ return {
       { "<S-h>", ":BufferLineCyclePrev<CR>", silent = true, desc = "Prev buffer" },
       { "<C-p>", ":BufferLineMovePrev<CR>", silent = true, desc = "Move buffer left" },
       { "<C-n>", ":BufferLineMoveNext<CR>", silent = true, desc = "Move buffer right" },
-      { "<leader>c", ":bdelete<CR>", silent = true, desc = "Close buffer" },
     },
     opts = {},
   },

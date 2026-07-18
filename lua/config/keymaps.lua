@@ -59,6 +59,27 @@ end, { desc = "Open LSP logfile", silent = true })
 map("n", "<leader>NL", ":edit $NVIM_LOG_FILE<CR>", { desc = "Open Neovim logfile", silent = true })
 map("n", "<leader>Nu", ":Lazy update<CR>", { desc = "Update plugins", silent = true })
 
+-- 关 buffer 不动窗口：裸 :bdelete 由 vim 自行挑替补（可能跳到 tree），
+-- 这里先把窗口切到轮换 buffer（上一个浏览的），再删目标 buffer
+map("n", "<leader>c", function()
+  local buf = vim.api.nvim_get_current_buf()
+  if vim.bo[buf].modified then
+    vim.notify("未保存的修改，先 :w 或 :bd! 强关", vim.log.levels.WARN)
+    return
+  end
+  for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+    vim.api.nvim_win_call(win, function()
+      local alt = vim.fn.bufnr("#")
+      if alt > 0 and alt ~= buf and vim.bo[alt].buflisted then
+        vim.cmd.buffer(alt)
+      else
+        vim.cmd.bprevious()
+      end
+    end)
+  end
+  vim.cmd.bdelete(buf)
+end, { desc = "Close buffer", silent = true })
+
 -- 开关 quickfix 窗口（对齐 lvim 的 QuickFixToggle）
 map("n", "<C-q>", function()
   for _, win in ipairs(vim.fn.getwininfo()) do

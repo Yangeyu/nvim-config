@@ -38,8 +38,33 @@ return {
           local function bmap(lhs, rhs, desc)
             vim.keymap.set("n", lhs, rhs, { buffer = ev.buf, desc = desc })
           end
-          bmap("gd", vim.lsp.buf.definition, "Goto definition")
-          bmap("gD", vim.lsp.buf.declaration, "Goto declaration")
+          -- 多候选时不弹 quickfix 窗口：跳过 `local foo` / `let foo: T` 这类
+          -- 纯声明行，优先跳带初始化赋值（=，含 const 对象/箭头函数）或函数体
+          -- （function/def/func/fn）的条目，无匹配则跳第一条；
+          -- 候选仍写入 quickfix，需要时 <C-q> 打开、]q/[q 遍历
+          bmap("gd", function()
+            vim.lsp.buf.definition({
+              on_list = function(opts)
+                vim.fn.setqflist({}, " ", opts)
+                local target = 1
+                if #opts.items > 1 then
+                  for i, item in ipairs(opts.items) do
+                    local text = item.text or ""
+                    if text:find("=", 1, true)
+                      or text:match("%f[%a]function%f[%A]") or text:match("%f[%a]def%f[%A]")
+                      or text:match("%f[%a]func%f[%A]") or text:match("%f[%a]fn%f[%A]") then
+                      target = i
+                      break
+                    end
+                  end
+                end
+                vim.cmd("silent cc " .. target)
+              end,
+            })
+          end, "Goto definition")
+          -- gd 的候选列表版：多候选时开 Telescope 带预览挑选，唯一候选直接跳。
+          -- 原 declaration 让位：主力语言里 declaration 与 definition 同址，键位闲置
+          bmap("gD", function() require("telescope.builtin").lsp_definitions() end, "Definitions (picker)")
           bmap("gr", vim.lsp.buf.references, "References")
           bmap("gI", vim.lsp.buf.implementation, "Goto implementation")
           bmap("gl", vim.diagnostic.open_float, "Line diagnostics")
