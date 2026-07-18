@@ -9,7 +9,6 @@ return {
     dependencies = {
       { "mason-org/mason.nvim", opts = {} },
       "mason-org/mason-lspconfig.nvim",
-      { "folke/lazydev.nvim", ft = "lua", opts = {} }, -- 编辑本配置时的 vim.* 补全
     },
     config = function()
       -- ── 诊断外观 ──
@@ -62,6 +61,24 @@ return {
       })
       vim.lsp.config("vue_ls", {
         init_options = { vue = { hybridMode = false } },
+      })
+      -- Lua：类型库在此静态声明（路径运行时计算，跨设备），启动只索引一次；
+      -- checkThirdParty 关掉，否则弹 "configure your work environment" 并想生成 .luarc.json
+      vim.lsp.config("lua_ls", {
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            diagnostics = { globals = { "vim" } },
+            workspace = {
+              checkThirdParty = "Disable",
+              library = {
+                vim.env.VIMRUNTIME .. "/lua", -- vim.* 全套类型标注
+                "${3rd}/luv/library", -- vim.uv
+                vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua", -- lazy spec 注解
+              },
+            },
+          },
+        },
       })
       vim.lsp.config("cssmodules_ls", {
         filetypes = { "typescriptreact", "javascriptreact" },
