@@ -43,5 +43,5 @@ after/ftplugin/       按文件类型微调的落点
 - 插件键位写在各自 spec 的 `keys` 字段(与插件同生共死,天然懒加载);全局键位只进 `config/keymaps.lua`。
 - 新增插件 = 在对应领域文件加一段 spec;删插件 = 删那一段,无需其他登记。
 - 升级是显式动作:`:Lazy update` 后提交 `lazy-lock.json`。
-- `<leader>sc` 直接打开 keymaps.lua;`:Config` 在配置目录内模糊查找任意配置文件(仪表盘 `c` 同款入口)。
+- `<leader>N` 是配置维护入口(对标 lvim 的 `<leader>L`):`Nc` 打开 keymaps.lua、`Nf`/`Ng` 在配置目录内查找/全文搜索、`Nk` 键位列表、`Nl`/`NL` LSP/Neovim 日志、`Nu` 更新插件;`:Config` 与仪表盘 `c` 仍是配置模糊查找入口。
 

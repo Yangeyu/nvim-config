@@ -42,10 +42,33 @@ map("v", ">", ">gv", opts)
 vim.api.nvim_create_user_command("Config", function()
   require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
 end, { desc = "Browse nvim config files" })
--- 直接打开键位文件（配置里最常改的入口）；模糊查找走 :Config / 仪表盘 c
-map("n", "<leader>sc", function()
+-- <leader>N：配置维护入口，对标 lvim 的 <leader>L 组
+map("n", "<leader>Nc", function()
   vim.cmd.edit(vim.fn.stdpath("config") .. "/lua/config/keymaps.lua")
-end, { desc = "Open keymaps.lua", silent = true })
+end, { desc = "Edit keymaps.lua", silent = true })
+map("n", "<leader>Nf", function()
+  require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
+end, { desc = "Find config files", silent = true })
+map("n", "<leader>Ng", function()
+  require("telescope.builtin").live_grep({ cwd = vim.fn.stdpath("config") })
+end, { desc = "Grep config files", silent = true })
+map("n", "<leader>Nk", ":Telescope keymaps<CR>", { desc = "View keymaps", silent = true })
+map("n", "<leader>Nl", function()
+  vim.cmd.edit(vim.lsp.get_log_path())
+end, { desc = "Open LSP logfile", silent = true })
+map("n", "<leader>NL", ":edit $NVIM_LOG_FILE<CR>", { desc = "Open Neovim logfile", silent = true })
+map("n", "<leader>Nu", ":Lazy update<CR>", { desc = "Update plugins", silent = true })
+
+-- 开关 quickfix 窗口（对齐 lvim 的 QuickFixToggle）
+map("n", "<C-q>", function()
+  for _, win in ipairs(vim.fn.getwininfo()) do
+    if win.quickfix == 1 then
+      vim.cmd.cclose()
+      return
+    end
+  end
+  vim.cmd.copen()
+end, { desc = "Toggle quickfix", silent = true })
 
 map("n", "<leader>V", "ggVG", { desc = "Select all" })
 map("n", "<leader>h", ":nohlsearch<CR>", { desc = "Clear highlight", silent = true })

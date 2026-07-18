@@ -203,7 +203,20 @@ return {
       update_focused_file = { enable = true },
       -- 树内换根（"-" 上探等）不再联动 :cd，cwd 始终钉在项目根；
       -- 否则 getcwd 跟着漂移，"=" 的还原会失效，telescope 搜索根也会被带跑
-      actions = { change_dir = { enable = false } },
+      actions = {
+        change_dir = { enable = false },
+        -- 默认 exclude 含 buftype=nofile，会把 alpha 仪表盘窗口判为不可用，
+        -- 导致从树里开文件时另开 split；去掉 nofile 让文件直接替换仪表盘。
+        -- 其余 nofile 面板（grug-far 等）按 filetype 继续排除
+        open_file = {
+          window_picker = {
+            exclude = {
+              filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame", "grug-far" },
+              buftype = { "terminal", "help" },
+            },
+          },
+        },
+      },
       -- "-" 上探父目录后，"=" 回到项目根目录
       on_attach = function(bufnr)
         local api = require("nvim-tree.api")
@@ -318,6 +331,7 @@ return {
       spec = {
         { "<leader>g", group = "git" },
         { "<leader>l", group = "lsp" },
+        { "<leader>N", group = "nvim" },
         { "<leader>p", group = "plugins" },
         { "<leader>s", group = "search" },
         { "<leader>S", group = "session" },
