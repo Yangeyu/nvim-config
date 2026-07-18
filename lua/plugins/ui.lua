@@ -23,22 +23,21 @@ return {
     config = function()
       local dashboard = require("alpha.themes.dashboard")
       dashboard.section.header.val = {
-        "                                                     ",
-        "  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗ ",
-        "  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║ ",
-        "  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║ ",
-        "  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║ ",
-        "  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║ ",
-        "  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝ ",
-        "                                                     ",
+        "                          _         ",
+        "   ____  ___  ____ _   __(_)___ ___ ",
+        "  / __ \\/ _ \\/ __ \\ | / / / __ `__ \\",
+        " / / / /  __/ /_/ / |/ / / / / / / /",
+        "/_/ /_/\\___/\\____/|___/_/_/ /_/ /_/ ",
+        "                                    ",
       }
+      -- 图标沿用 lvim icons.ui 的码位（在本机字体下已验证可渲染）
       dashboard.section.buttons.val = {
         dashboard.button("f", "󰈞  Find File", ":Telescope find_files<CR>"),
-        dashboard.button("n", "  New File", ":ene!<CR>"),
-        dashboard.button("p", "  Projects", ":Telescope project<CR>"),
-        dashboard.button("r", "󰄉  Recent files", ":Telescope oldfiles<CR>"),
+        dashboard.button("n", "  New File", ":ene!<CR>"),
+        dashboard.button("p", "  Projects", ":Telescope project<CR>"),
+        dashboard.button("r", "  Recent files", ":Telescope oldfiles<CR>"),
         dashboard.button("t", "󰊄  Find Text", ":Telescope live_grep<CR>"),
-        dashboard.button("c", "  Configuration", ":Config<CR>"),
+        dashboard.button("c", "  Configuration", ":Config<CR>"),
         dashboard.button("q", "󰅖  Quit", ":qa<CR>"),
       }
       require("alpha").setup(dashboard.config)
