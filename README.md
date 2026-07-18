@@ -7,8 +7,8 @@
 ```bash
 # 1. 外部依赖
 brew install neovim ripgrep fd jq
-# Nerd Font(图标渲染):
-brew install --cask font-jetbrains-mono-nerd-font
+# Nerd Font(图标渲染;终端主字体用 ComicShannsMono NFM):
+brew install --cask font-comic-shanns-mono-nerd-font font-symbols-only-nerd-font
 
 # 2. 配置本体
 git clone <this-repo> ~/.config/nvim
