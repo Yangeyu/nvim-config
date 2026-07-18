@@ -57,6 +57,22 @@ return {
     end,
   },
 
+  -- winbar 面包屑的数据源（LspAttach 时在 lsp.lua 里显式 attach）
+  { "SmiteshP/nvim-navic", lazy = true, opts = { highlight = true } },
+
+  -- 缩进线：全局暗灰近隐形，仅当前作用域用清晰竖线勾出（信息按需出现）；
+  -- 层级配对的彩色信号交给 rainbow-delimiters 的括号，两者不重复
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      indent = { char = "▏" },
+      scope = { enabled = true, show_start = false, show_end = false },
+      exclude = { filetypes = { "alpha", "NvimTree" } },
+    },
+  },
+
   -- 状态栏：含宏录制指示器（录制期间常驻 "● REC @寄存器"）
   {
     "nvim-lualine/lualine.nvim",
@@ -96,6 +112,16 @@ return {
           globalstatus = true,
           component_separators = { left = "", right = "" },
           section_separators = { left = "", right = "" },
+          disabled_filetypes = {
+            winbar = { "NvimTree", "alpha", "toggleterm", "lazy", "mason", "qf", "help" },
+          },
+        },
+        -- winbar 面包屑：文件名 + navic 符号路径
+        winbar = {
+          lualine_c = { { "filename", path = 0 }, { "navic" } },
+        },
+        inactive_winbar = {
+          lualine_c = { { "filename", path = 0 } },
         },
         sections = {
           lualine_c = { "filename" },
@@ -168,6 +194,7 @@ return {
   {
     "akinsho/toggleterm.nvim",
     keys = {
+      { "<C-\\>", desc = "Terminal float", mode = { "n", "t" } }, -- 实际映射由 open_mapping 注册，此处仅触发懒加载
       { "<leader>tt", ":ToggleTerm direction=float<CR>", silent = true, desc = "Terminal float" },
       { "<leader>tv", ":ToggleTerm direction=vertical size=70<CR>", silent = true, desc = "Terminal vertical" },
       -- 与 lvim 对齐：<leader>gg 全屏展开 lazygit
@@ -192,7 +219,8 @@ return {
         desc = "Lazygit",
       },
     },
-    opts = { open_mapping = false },
+    -- <C-\> 在 normal/insert/terminal 模式均可开合浮动终端（与 lvim 一致）
+    opts = { open_mapping = [[<C-\>]], direction = "float" },
   },
 
   -- 命令行/消息 UI

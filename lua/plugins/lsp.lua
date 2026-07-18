@@ -9,6 +9,7 @@ return {
     dependencies = {
       { "mason-org/mason.nvim", opts = {} },
       "mason-org/mason-lspconfig.nvim",
+      { "b0o/schemastore.nvim", lazy = true }, -- jsonls/yamlls 的常用 schema 目录
     },
     config = function()
       -- ── 诊断外观 ──
@@ -29,6 +30,11 @@ return {
       -- ── buffer 键位（挂载时注入）──
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(ev)
+          -- winbar 面包屑：server 支持 documentSymbol 才挂 navic
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+          if client and client.server_capabilities.documentSymbolProvider then
+            require("nvim-navic").attach(client, ev.buf)
+          end
           local function bmap(lhs, rhs, desc)
             vim.keymap.set("n", lhs, rhs, { buffer = ev.buf, desc = desc })
           end
@@ -77,6 +83,23 @@ return {
                 vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua", -- lazy spec 注解
               },
             },
+          },
+        },
+      })
+      -- JSON/YAML：接 schemastore（package.json、GitHub Actions 等自动校验补全）
+      vim.lsp.config("jsonls", {
+        settings = {
+          json = {
+            schemas = require("schemastore").json.schemas(),
+            validate = { enable = true },
+          },
+        },
+      })
+      vim.lsp.config("yamlls", {
+        settings = {
+          yaml = {
+            schemaStore = { enable = false, url = "" }, -- 关内置目录，统一走 schemastore.nvim
+            schemas = require("schemastore").yaml.schemas(),
           },
         },
       })

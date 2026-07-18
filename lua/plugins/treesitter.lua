@@ -52,6 +52,26 @@ return {
   {
     "HiPhish/rainbow-delimiters.nvim",
     event = { "BufReadPost", "BufNewFile" },
+    config = function()
+      -- 自定义 7 色板（onedark 系），换主题后重建
+      local function set_palette()
+        vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+        vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+        vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+        vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+        vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+        vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+      end
+      set_palette()
+      vim.api.nvim_create_autocmd("ColorScheme", { callback = set_palette })
+      vim.g.rainbow_delimiters = {
+        highlight = {
+          "RainbowRed", "RainbowYellow", "RainbowBlue", "RainbowOrange",
+          "RainbowGreen", "RainbowViolet", "RainbowCyan",
+        },
+      }
+    end,
   },
   {
     "windwp/nvim-ts-autotag",
