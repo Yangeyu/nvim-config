@@ -15,6 +15,49 @@ return {
   { "rose-pine/neovim", name = "rose-pine", lazy = true },
   { "ellisonleao/gruvbox.nvim", lazy = true },
 
+  -- 启动仪表盘（无参启动时显示；<leader>; 随时唤出）
+  {
+    "goolord/alpha-nvim",
+    event = "VimEnter",
+    keys = { { "<leader>;", ":Alpha<CR>", silent = true, desc = "Dashboard" } },
+    config = function()
+      local dashboard = require("alpha.themes.dashboard")
+      dashboard.section.header.val = {
+        "                                                     ",
+        "  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗ ",
+        "  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║ ",
+        "  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║ ",
+        "  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║ ",
+        "  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║ ",
+        "  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝ ",
+        "                                                     ",
+      }
+      dashboard.section.buttons.val = {
+        dashboard.button("f", "󰈞  Find File", ":Telescope find_files<CR>"),
+        dashboard.button("n", "  New File", ":ene!<CR>"),
+        dashboard.button("p", "  Projects", ":Telescope project<CR>"),
+        dashboard.button("r", "󰄉  Recent files", ":Telescope oldfiles<CR>"),
+        dashboard.button("t", "󰊄  Find Text", ":Telescope live_grep<CR>"),
+        dashboard.button("c", "  Configuration", ":Config<CR>"),
+        dashboard.button("q", "󰅖  Quit", ":qa<CR>"),
+      }
+      require("alpha").setup(dashboard.config)
+      -- 懒加载到此处时 VimEnter 已过，alpha 自身的 autostart autocmd 不会再触发；
+      -- 手动 start(true)，是否该显示（有参启动/stdin 等跳过）由其内置守卫判断
+      require("alpha").start(true)
+      -- 插件就绪后再填 footer（启动统计此时才有数据）
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "LazyVimStarted",
+        callback = function()
+          local stats = require("lazy").stats()
+          dashboard.section.footer.val =
+            string.format("⚡ %d plugins loaded in %.0f ms", stats.loaded, stats.startuptime)
+          pcall(vim.cmd.AlphaRedraw)
+        end,
+      })
+    end,
+  },
+
   -- 状态栏：含宏录制指示器（录制期间常驻 "● REC @寄存器"）
   {
     "nvim-lualine/lualine.nvim",

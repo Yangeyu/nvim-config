@@ -29,7 +29,7 @@ nvim
 init.lua              入口,仅 require
 lua/config/           与插件无关的裸配置(options/keymaps/autocmds/lazy 自举)
 lua/plugins/          每文件一个领域,返回 lazy spec,自动 import:
-  ui                  主题/状态栏/bufferline/文件树/终端/noice/which-key
+  ui                  主题/仪表盘(alpha)/状态栏/bufferline/文件树/终端/noice/which-key
   editor              hop/surround/wildfire/marks/滚动/会话/对齐/翻译/折叠(ufo)
   treesitter          treesitter(master) + textobjects + yati 缩进
   lsp                 nvim 0.11 原生 vim.lsp.config 体系 + mason
@@ -47,4 +47,5 @@ after/ftplugin/       按文件类型微调的落点
 - 插件键位写在各自 spec 的 `keys` 字段(与插件同生共死,天然懒加载);全局键位只进 `config/keymaps.lua`。
 - 新增插件 = 在对应领域文件加一段 spec;删插件 = 删那一段,无需其他登记。
 - 升级是显式动作:`:Lazy update` 后提交 `lazy-lock.json`。
+- `:Config` 在配置目录内模糊查找,快速打开任意配置文件(仪表盘 `c` 同款入口)。
 

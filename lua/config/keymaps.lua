@@ -31,6 +31,11 @@ map("v", "<leader>c", "g<C-g>", opts)
 map("v", "<", "<gv", opts)
 map("v", ">", ">gv", opts)
 
+-- :Config — 在配置目录内模糊查找，快速跳到任意配置文件
+vim.api.nvim_create_user_command("Config", function()
+  require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
+end, { desc = "Browse nvim config files" })
+
 map("n", "<leader>gv", "ggVG", { desc = "Select all" })
 map("n", "<leader>h", ":nohlsearch<CR>", { desc = "Clear highlight", silent = true })
 map("n", "<leader>w", ":w<CR>", { desc = "Save", silent = true })
