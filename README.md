@@ -25,7 +25,7 @@ nvim
 init.lua              入口,仅 require
 lua/config/           与插件无关的裸配置(options/keymaps/autocmds/lazy 自举)
 lua/plugins/          每文件一个领域,返回 lazy spec,自动 import:
-  ui                  主题/仪表盘(alpha)/状态栏/winbar面包屑(navic)/hlchunk(块勾勒+缩进线)/bufferline/文件树/终端/noice/which-key
+  ui                  主题/仪表盘(alpha)/状态栏/winbar面包屑(navic)/hlchunk(块勾勒+缩进线)/bufferline/文件树(root-pin根跟随)/终端/noice/which-key
   editor              hop/surround/wildfire/marks/滚动/会话/对齐/翻译/折叠(ufo)
   treesitter          treesitter(master) + textobjects + yati 缩进
   lsp                 nvim 0.11 原生 vim.lsp.config 体系 + mason + schemastore(json/yaml)

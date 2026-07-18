@@ -170,20 +170,31 @@ return {
     opts = {},
   },
 
+  -- 文件树根跟随 + 按项目搜索的根解析（自研，见插件 README：根感知但绝不 :cd）
+  {
+    "Yangeyu/root-pin.nvim",
+    -- 本地开发时切换：dir = vim.fn.expand("~/Workplace/vim-plugins/root-pin.nvim"),
+    dependencies = { "nvim-tree/nvim-tree.lua" },
+    keys = {
+      { "<leader>e", function() require("root-pin").toggle() end, silent = true, desc = "Explorer" },
+      { "<leader>tj", function() require("root-pin").reveal() end, silent = true, desc = "Focus explorer" },
+    },
+    opts = {},
+  },
+
   -- 文件树
   {
     "nvim-tree/nvim-tree.lua",
     dependencies = "nvim-tree/nvim-web-devicons",
-    keys = {
-      { "<leader>e", ":NvimTreeFindFileToggle<CR>", silent = true, desc = "Explorer" },
-      { "<leader>tj", ":NvimTreeFindFile<CR>", silent = true, desc = "Focus explorer" },
-    },
+    lazy = true, -- 由 root-pin 的键位经 require 拉起
     init = function()
       vim.g.loaded_netrw = 1
       vim.g.loaded_netrwPlugin = 1
     end,
-    -- 打开侧栏定位到当前文件；切换 buffer 时树内高亮跟随
     opts = {
+      -- 顶层只显示项目目录名（默认值会拼成 "~/path/.." ）
+      renderer = { root_folder_label = ":t" },
+      -- 切换 buffer 时树内高亮跟随（当前根内定位；换根由 root-pin 负责）
       update_focused_file = { enable = true },
       -- 树内换根（"-" 上探等）不再联动 :cd，cwd 始终钉在项目根；
       -- 否则 getcwd 跟着漂移，"=" 的还原会失效，telescope 搜索根也会被带跑
