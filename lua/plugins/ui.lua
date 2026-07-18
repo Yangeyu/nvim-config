@@ -204,7 +204,6 @@ return {
     "akinsho/toggleterm.nvim",
     keys = {
       { "<C-\\>", desc = "Terminal float", mode = { "n", "t" } }, -- 实际映射由 open_mapping 注册，此处仅触发懒加载
-      { "<leader>tt", ":ToggleTerm direction=float<CR>", silent = true, desc = "Terminal float" },
       { "<leader>tv", ":ToggleTerm direction=vertical size=70<CR>", silent = true, desc = "Terminal vertical" },
       -- 与 lvim 对齐：<leader>gg 全屏展开 lazygit
       {
