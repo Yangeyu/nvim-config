@@ -60,16 +60,25 @@ return {
   -- winbar 面包屑的数据源（LspAttach 时在 lsp.lua 里显式 attach）
   { "SmiteshP/nvim-navic", lazy = true, opts = { highlight = true } },
 
-  -- 缩进线：全局暗灰近隐形，仅当前作用域用清晰竖线勾出（信息按需出现）；
-  -- 层级配对的彩色信号交给 rainbow-delimiters 的括号，两者不重复
+  -- 缩进可视化：动画勾勒当前 chunk（语法不完整时变红）+ 暗色缩进线
   {
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
+    "shellRaining/hlchunk.nvim",
     event = { "BufReadPost", "BufNewFile" },
     opts = {
-      indent = { char = "▏" },
-      scope = { enabled = true, show_start = false, show_end = false },
-      exclude = { filetypes = { "alpha", "NvimTree" } },
+      chunk = {
+        enable = true,
+        use_treesitter = true,
+        style = {
+          { fg = "#61AFEF" }, -- 正常 chunk
+          { fg = "#E06C75" }, -- 语法不完整的 chunk
+        },
+        exclude_filetypes = { alpha = true, NvimTree = true },
+      },
+      indent = {
+        enable = true,
+        chars = { "▏" },
+        exclude_filetypes = { alpha = true, NvimTree = true },
+      },
     },
   },
 
