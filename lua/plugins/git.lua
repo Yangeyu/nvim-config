@@ -16,7 +16,9 @@ return {
       { "<leader>gL", function() require("gitsigns").blame_line({ full = true }) end, desc = "Blame line (full)" },
       { "<leader>gd", ":Gitsigns diffthis HEAD<CR>", silent = true, desc = "Git diff" },
     },
-    opts = {},
+    opts = {
+      attach_to_untracked = true,
+    },
   },
   {
     "sindrets/diffview.nvim",
