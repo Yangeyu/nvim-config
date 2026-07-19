@@ -64,7 +64,8 @@ return {
           end, "Goto definition")
           -- gd 的候选列表版：多候选时开 Telescope 带预览挑选，唯一候选直接跳。
           -- 原 declaration 让位：主力语言里 declaration 与 definition 同址，键位闲置
-          bmap("gD", function() require("telescope.builtin").lsp_definitions() end, "Definitions (picker)")
+          -- initial_mode=normal：弹列表时直接 j/k 选，免去先 <Esc>
+          bmap("gD", function() require("telescope.builtin").lsp_definitions({ initial_mode = "normal" }) end, "Definitions (picker)")
           bmap("gr", vim.lsp.buf.references, "References")
           bmap("gI", vim.lsp.buf.implementation, "Goto implementation")
           bmap("gl", vim.diagnostic.open_float, "Line diagnostics")
