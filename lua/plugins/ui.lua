@@ -223,6 +223,13 @@ return {
         vim.keymap.set("n", "=", function()
           api.tree.change_root(vim.fn.getcwd())
         end, { buffer = bufnr, desc = "nvim-tree: Back to project root" })
+        -- +/_ 调树宽（"-" 被上探父目录占用，用同键位的 Shift 变体）
+        vim.keymap.set("n", "+", function()
+          vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) + 5)
+        end, { buffer = bufnr, desc = "nvim-tree: Wider" })
+        vim.keymap.set("n", "_", function()
+          vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) - 5)
+        end, { buffer = bufnr, desc = "nvim-tree: Narrower" })
       end,
     },
   },
