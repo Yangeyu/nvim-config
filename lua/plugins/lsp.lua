@@ -93,8 +93,22 @@ return {
       vim.lsp.config("vue_ls", {
         init_options = { vue = { hybridMode = false } },
       })
-      -- Lua：类型库在此静态声明（路径运行时计算，跨设备），启动只索引一次；
-      -- checkThirdParty 关掉，否则弹 "configure your work environment" 并想生成 .luarc.json
+      -- Lua：类型库静态声明（路径运行时计算，跨设备），启动只索引一次。
+      -- 全部已装插件的 lua/ 都入库，配置里 require 到的插件 API 就有补全/跳转；
+      -- 相比 lazydev 按 require 增量注入，静态库避免了每首开新文件时的
+      -- 重索引诊断闪烁，且配置走标准推送、对 root 外的库文件 scope 也生效，
+      -- 不会弹 "configure your work environment"（checkThirdParty 询问）
+      local lua_library = {
+        vim.env.VIMRUNTIME .. "/lua", -- vim.* 全套类型标注
+        "${3rd}/luv/library", -- vim.uv
+      }
+      local lazy_root = vim.fn.stdpath("data") .. "/lazy"
+      for name, kind in vim.fs.dir(lazy_root) do
+        local lua_dir = lazy_root .. "/" .. name .. "/lua"
+        if kind == "directory" and vim.uv.fs_stat(lua_dir) then
+          lua_library[#lua_library + 1] = lua_dir
+        end
+      end
       vim.lsp.config("lua_ls", {
         settings = {
           Lua = {
@@ -102,11 +116,7 @@ return {
             diagnostics = { globals = { "vim" } },
             workspace = {
               checkThirdParty = "Disable",
-              library = {
-                vim.env.VIMRUNTIME .. "/lua", -- vim.* 全套类型标注
-                "${3rd}/luv/library", -- vim.uv
-                vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua", -- lazy spec 注解
-              },
+              library = lua_library,
             },
           },
         },
