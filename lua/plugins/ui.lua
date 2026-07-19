@@ -11,6 +11,8 @@ return {
         custom_highlights = function(c)
           return {
             TelescopeSelection = { fg = "NONE", bg = c.surface0, style = { "bold" } },
+            -- 默认蓝色与目录名同色，未跟踪文件按惯例用绿色区分
+            NvimTreeGitNew = { fg = c.green },
           }
         end,
       })
@@ -206,7 +208,7 @@ return {
     end,
     opts = {
       -- 顶层只显示项目目录名（默认值会拼成 "~/path/.." ）
-      renderer = { root_folder_label = ":t" },
+      renderer = { root_folder_label = ":t", highlight_git = "name" },
       -- 切换 buffer 时树内高亮跟随（当前根内定位；换根由 root-pin 负责）
       update_focused_file = { enable = true },
       -- 树内换根（"-" 上探等）不再联动 :cd，cwd 始终钉在项目根；
@@ -232,13 +234,6 @@ return {
         vim.keymap.set("n", "=", function()
           api.tree.change_root(vim.fn.getcwd())
         end, { buffer = bufnr, desc = "nvim-tree: Back to project root" })
-        -- +/_ 调树宽（"-" 被上探父目录占用，用同键位的 Shift 变体）
-        vim.keymap.set("n", "+", function()
-          vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) + 5)
-        end, { buffer = bufnr, desc = "nvim-tree: Wider" })
-        vim.keymap.set("n", "_", function()
-          vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) - 5)
-        end, { buffer = bufnr, desc = "nvim-tree: Narrower" })
       end,
     },
   },
