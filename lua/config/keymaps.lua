@@ -64,7 +64,7 @@ map("n", "<leader>Nu", ":Lazy update<CR>", { desc = "Update plugins", silent = t
 map("n", "<leader>c", function()
   local buf = vim.api.nvim_get_current_buf()
   if vim.bo[buf].modified then
-    vim.notify("未保存的修改，先 :w 或 :bd! 强关", vim.log.levels.WARN)
+    vim.notify("Unsaved changes: :w to save or :bd! to force close", vim.log.levels.WARN)
     return
   end
   for _, win in ipairs(vim.fn.win_findbuf(buf)) do

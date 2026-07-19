@@ -74,6 +74,11 @@ return {
           bmap("<leader>lj", function() vim.diagnostic.jump({ count = 1 }) end, "Next diagnostic")
           bmap("<leader>lk", function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
           bmap("<leader>lq", vim.diagnostic.setloclist, "Diagnostics to loclist")
+          -- 兜底：自动重载没跟上（如新建/删文件后 server watcher 失灵）时手动一键复位
+          bmap("<leader>lR", function()
+            vim.cmd.checktime()
+            vim.cmd.LspRestart()
+          end, "Reload files & restart LSP")
         end,
       })
 
