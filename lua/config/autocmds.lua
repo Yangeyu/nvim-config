@@ -7,8 +7,7 @@ autocmd("TextYankPost", {
   end,
 })
 
--- 外部工具（如 Claude Code）改了磁盘文件后，切回窗口/换 buffer/停顿时
--- 自动重载，重载会向 LSP 推送新内容，过期诊断随之刷新。
+-- 外部工具改盘后自动重载 buffer（LSP 随之刷新过期诊断）；
 -- checktime 在 cmdline-window 里禁止执行，需跳过
 autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
   callback = function()

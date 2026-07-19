@@ -80,16 +80,22 @@ map("n", "<leader>c", function()
   vim.cmd.bdelete(buf)
 end, { desc = "Close buffer", silent = true })
 
--- 开关 quickfix 窗口（对齐 lvim 的 QuickFixToggle）
+-- 开关底部列表窗口（对齐 lvim 的 QuickFixToggle）：
+-- loclist 窗口的 quickfix 标志也是 1，须用 lclose 关，cclose 对它无效
 map("n", "<C-q>", function()
+  local closed = false
   for _, win in ipairs(vim.fn.getwininfo()) do
     if win.quickfix == 1 then
-      vim.cmd.cclose()
-      return
+      vim.api.nvim_win_call(win.winid, function()
+        vim.cmd(win.loclist == 1 and "lclose" or "cclose")
+      end)
+      closed = true
     end
   end
-  vim.cmd.copen()
-end, { desc = "Toggle quickfix", silent = true })
+  if not closed then
+    vim.cmd.copen()
+  end
+end, { desc = "Toggle quickfix/loclist", silent = true })
 
 map("n", "<leader>V", "ggVG", { desc = "Select all" })
 map("n", "<leader>h", ":nohlsearch<CR>", { desc = "Clear highlight", silent = true })

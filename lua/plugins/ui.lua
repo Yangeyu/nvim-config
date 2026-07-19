@@ -5,6 +5,15 @@ return {
     name = "catppuccin",
     priority = 1000,
     config = function()
+      require("catppuccin").setup({
+        -- 选中行只留背景：默认 rosewater 前景会盖掉条目内的语义色；
+        -- custom_highlights 逐键合并，fg 必须显式置 NONE 才能去掉
+        custom_highlights = function(c)
+          return {
+            TelescopeSelection = { fg = "NONE", bg = c.surface0, style = { "bold" } },
+          }
+        end,
+      })
       vim.cmd.colorscheme("catppuccin-mocha")
     end,
   },

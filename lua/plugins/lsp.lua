@@ -17,12 +17,13 @@ return {
         virtual_text = true,
         severity_sort = true,
         float = { border = "rounded", source = true },
+        -- \u{} 转义防 PUA 字形复制丢失；勿加尾随空格（telescope 列表首列会撑满）
         signs = {
           text = {
-            [vim.diagnostic.severity.ERROR] = " ",
-            [vim.diagnostic.severity.WARN] = " ",
-            [vim.diagnostic.severity.HINT] = " ",
-            [vim.diagnostic.severity.INFO] = " ",
+            [vim.diagnostic.severity.ERROR] = "\u{ea87}",
+            [vim.diagnostic.severity.WARN] = "\u{ea6c}",
+            [vim.diagnostic.severity.HINT] = "\u{f0336}",
+            [vim.diagnostic.severity.INFO] = "\u{ea74}",
           },
         },
       })
@@ -64,7 +65,6 @@ return {
           end, "Goto definition")
           -- gd 的候选列表版：多候选时开 Telescope 带预览挑选，唯一候选直接跳。
           -- 原 declaration 让位：主力语言里 declaration 与 definition 同址，键位闲置
-          -- initial_mode=normal：弹列表时直接 j/k 选，免去先 <Esc>
           bmap("gD", function() require("telescope.builtin").lsp_definitions({ initial_mode = "normal" }) end, "Definitions (picker)")
           bmap("gr", vim.lsp.buf.references, "References")
           bmap("gI", vim.lsp.buf.implementation, "Goto implementation")
@@ -72,6 +72,9 @@ return {
           bmap("K", vim.lsp.buf.hover, "Hover")
           bmap("<leader>la", vim.lsp.buf.code_action, "Code action")
           bmap("<leader>lr", vim.lsp.buf.rename, "Rename")
+          bmap("<leader>ld", function()
+            require("telescope.builtin").diagnostics(require("telescope.themes").get_ivy({ bufnr = 0, initial_mode = "normal" }))
+          end, "Buffer diagnostics")
           bmap("<leader>lj", function() vim.diagnostic.jump({ count = 1 }) end, "Next diagnostic")
           bmap("<leader>lk", function() vim.diagnostic.jump({ count = -1 }) end, "Prev diagnostic")
           bmap("<leader>lq", vim.diagnostic.setloclist, "Diagnostics to loclist")

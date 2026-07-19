@@ -43,12 +43,6 @@ return {
         silent = true,
         desc = "Colorscheme with preview",
       },
-      {
-        "<leader>sp",
-        function() require("telescope.builtin").colorscheme({ enable_preview = true }) end,
-        silent = true,
-        desc = "Colorscheme with preview",
-      },
       { "<leader>go", ":Telescope git_status<CR>", silent = true, desc = "Open changed file" },
       { "<leader>gb", ":Telescope git_branches<CR>", silent = true, desc = "Checkout branch" },
       { "<leader>gc", ":Telescope git_commits<CR>", silent = true, desc = "Checkout commit" },
