@@ -274,7 +274,13 @@ return {
     keys = {
       { "<Esc>", ":Noice dismiss<CR>", silent = true, desc = "Dismiss messages" },
     },
-    opts = {},
+    -- hover 请求发给 buffer 上所有 server，noice 对每个空响应都会弹
+    -- "No information available"（如 tailwindcss 在函数名上必空），静默掉
+    opts = {
+      lsp = { hover = { silent = true } },
+      -- hover/签名浮窗加边框，与编辑区分界
+      presets = { lsp_doc_border = true },
+    },
   },
 
   -- 光标拖影
