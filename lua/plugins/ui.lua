@@ -327,7 +327,12 @@ return {
     event = "VeryLazy",
     opts = {
       icons = { mappings = false },
+      -- 列宽上限：g 组里 nvim 内置的超长描述（gx/gO 等）会把单列撑满全屏，
+      -- 封顶后与 <leader> 面板一样多列排布
+      layout = { width = { min = 20, max = 40 } },
       spec = {
+        { "gx", desc = "Open with system handler" },
+        { "gO", desc = "Document symbols" },
         { "<leader>g", group = "git" },
         { "<leader>l", group = "lsp" },
         { "<leader>N", group = "nvim" },
