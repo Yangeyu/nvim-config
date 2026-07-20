@@ -219,6 +219,8 @@ return {
         -- 导致从树里开文件时另开 split；去掉 nofile 让文件直接替换仪表盘。
         -- 其余 nofile 面板（grug-far 等）按 filetype 继续排除
         open_file = {
+          -- 关掉开文件时的 view.resize()，否则它会均分所有窗口、把手动拉的树宽/窗口宽打回
+          resize_window = false,
           window_picker = {
             exclude = {
               filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame", "grug-far" },

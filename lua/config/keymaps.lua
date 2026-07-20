@@ -20,7 +20,7 @@ map("n", "<C-j>", "<C-w>j", opts)
 map("n", "<C-k>", "<C-w>k", opts)
 map("n", "<C-l>", "<C-w>l", opts)
 
--- +/_ 调当前窗口宽度（winfixwidth 只挡自动均分，显式 resize 照常生效，树窗口同样可用）
+-- +/_ 调当前窗口宽度（树窗口通用；开文件不重置宽度见 ui.lua 的 resize_window）
 map("n", "+", ":vertical resize +5<CR>", { desc = "Wider window", silent = true })
 map("n", "_", ":vertical resize -5<CR>", { desc = "Narrower window", silent = true })
 
