@@ -53,6 +53,11 @@ return {
       require("telescope").setup({
         defaults = {
           mappings = {
+            -- 对齐 lvim：C-j/C-k 切换检索历史（C-p/C-n 保持默认的移动选中项）
+            i = {
+              ["<C-j>"] = t_actions.cycle_history_next,
+              ["<C-k>"] = t_actions.cycle_history_prev,
+            },
             -- normal 模式 J/K 滚动预览窗口内容（半页）
             n = {
               ["J"] = t_actions.preview_scrolling_down,
