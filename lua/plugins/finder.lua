@@ -5,6 +5,9 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-live-grep-args.nvim",
       "nvim-telescope/telescope-project.nvim",
+      -- 原生 fzf sorter：大仓库排序快一个量级，并支持 fzf 过滤语法
+      -- （'foo 精确、^src 前缀、.lua$ 后缀、!test 排除，空格分隔取交集）
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
     cmd = "Telescope",
     keys = {
@@ -76,6 +79,7 @@ return {
           },
         },
       })
+      require("telescope").load_extension("fzf")
       require("telescope").load_extension("live_grep_args")
       require("telescope").load_extension("project")
     end,
