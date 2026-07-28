@@ -7,22 +7,8 @@ autocmd("TextYankPost", {
   end,
 })
 
--- 外部工具改盘后自动重载 buffer（LSP 随之刷新过期诊断）；
--- checktime 在 cmdline-window 里禁止执行，需跳过
-autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
-  callback = function()
-    if vim.fn.getcmdwintype() == "" then
-      vim.cmd.checktime()
-    end
-  end,
-})
-
--- 重载时提示，避免内容"无声变化"
-autocmd("FileChangedShellPost", {
-  callback = function()
-    vim.notify("File changed on disk, reloaded", vim.log.levels.INFO)
-  end,
-})
+-- 外部工具改盘后自动同步全部 buffer（含后台隐藏），重载/冲突决策与通知见 config/filesync.lua
+require("config.filesync").setup()
 
 -- 辅助窗口 q 直接关闭
 autocmd("FileType", {
