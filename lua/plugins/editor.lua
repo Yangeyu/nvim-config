@@ -23,7 +23,15 @@ return {
     end,
   },
 
-  { "numToStr/Comment.nvim", event = { "BufReadPost", "BufNewFile" }, opts = {} },
+  {
+    "numToStr/Comment.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {},
+    keys = {
+      { "<leader>/", "<Plug>(comment_toggle_linewise_current)", desc = "Comment toggle current line" },
+      { "<leader>/", "<Plug>(comment_toggle_linewise_visual)", mode = "x", desc = "Comment toggle linewise (visual)" },
+    },
+  },
   { "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },
 
   -- mark 可视化
