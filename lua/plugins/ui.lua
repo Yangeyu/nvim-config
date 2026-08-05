@@ -246,14 +246,29 @@ return {
     keys = {
       { "<C-\\>", desc = "Terminal float", mode = { "n", "t" } }, -- 实际映射由 open_mapping 注册，此处仅触发懒加载
       { "<leader>tv", ":ToggleTerm direction=vertical size=70<CR>", silent = true, desc = "Terminal vertical" },
-      -- 与 lvim 对齐：<leader>gg 全屏展开 lazygit
+      -- 与 lvim 对齐：<leader>gg 全屏展开 lazygit。
+      -- 仓库根取自当前文件（.git 上溯，无名 buffer 回退 cwd），按根缓存实例：
+      -- 跨项目 buffer 各开各的 lazygit，界面状态互不干扰
       {
         "<leader>gg",
         function()
-          local Terminal = require("toggleterm.terminal").Terminal
-          _G.__lazygit_term = _G.__lazygit_term
-            or Terminal:new({
+          local terms = _G.__lazygit_terms or {}
+          _G.__lazygit_terms = terms
+          -- 在 lazygit 终端内再按：终端 buffer 名解析不出仓库根，直接收起当前浮窗
+          local curbuf = vim.api.nvim_get_current_buf()
+          for _, term in pairs(terms) do
+            if term.bufnr == curbuf then
+              term:toggle()
+              return
+            end
+          end
+          local file = vim.api.nvim_buf_get_name(0)
+          local dir = (file ~= "" and vim.fs.root(file, ".git")) or vim.fn.getcwd()
+          local term = terms[dir]
+          if not term then
+            term = require("toggleterm.terminal").Terminal:new({
               cmd = "lazygit",
+              dir = dir,
               direction = "float",
               hidden = true,
               float_opts = {
@@ -262,7 +277,9 @@ return {
                 height = function() return vim.o.lines end,
               },
             })
-          _G.__lazygit_term:toggle()
+            terms[dir] = term
+          end
+          term:toggle()
         end,
         silent = true,
         desc = "Lazygit",

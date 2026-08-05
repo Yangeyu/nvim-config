@@ -11,30 +11,42 @@ return {
     },
     cmd = "Telescope",
     keys = {
-      { "<leader>f", ":Telescope find_files<CR>", silent = true, desc = "Find files" },
-      { "<leader>b", ":Telescope buffers<CR>", silent = true, desc = "Buffers" },
-      { "<leader>st", ":Telescope live_grep<CR>", silent = true, desc = "Grep text" },
-      { "<leader>sa", ":Telescope live_grep_args theme=ivy<CR>", silent = true, desc = "Grep with args" },
-      { "F", ":Telescope current_buffer_fuzzy_find theme=ivy<CR>", silent = true, desc = "Fuzzy find in buffer" },
-      -- 以当前文件所属项目为根搜索（看依赖包时即搜该包；项目内等同 <leader>f / <leader>st）
+      -- 主搜索键跟随当前文件所属项目（root-pin 解析；cwd 锚点不受影响）：
+      -- 工作项目内行为不变，浏览依赖包/外部项目文件时即搜该项目
       {
-        "<leader>sf",
+        "<leader>f",
         function()
           local r = require("root-pin").root()
           require("telescope.builtin").find_files({ cwd = r, prompt_title = "Files: " .. vim.fn.fnamemodify(r, ":~") })
         end,
         silent = true,
-        desc = "Find files (file's project)",
+        desc = "Find files",
       },
+      { "<leader>b", ":Telescope buffers<CR>", silent = true, desc = "Buffers" },
       {
-        "<leader>sg",
+        "<leader>st",
         function()
           local r = require("root-pin").root()
           require("telescope.builtin").live_grep({ cwd = r, prompt_title = "Grep: " .. vim.fn.fnamemodify(r, ":~") })
         end,
         silent = true,
-        desc = "Grep (file's project)",
+        desc = "Grep text",
       },
+      {
+        "<leader>sa",
+        function()
+          local r = require("root-pin").root()
+          require("telescope").extensions.live_grep_args.live_grep_args(
+            require("telescope.themes").get_ivy({ cwd = r, prompt_title = "Grep args: " .. vim.fn.fnamemodify(r, ":~") })
+          )
+        end,
+        silent = true,
+        desc = "Grep with args",
+      },
+      { "F", ":Telescope current_buffer_fuzzy_find theme=ivy<CR>", silent = true, desc = "Fuzzy find in buffer" },
+      -- 显式以工作项目（cwd 锚点）为根：在外部项目文件里也搜整个工作项目
+      { "<leader>sf", ":Telescope find_files<CR>", silent = true, desc = "Find files (workspace)" },
+      { "<leader>sg", ":Telescope live_grep<CR>", silent = true, desc = "Grep (workspace)" },
       { "<leader>sr", ":Telescope oldfiles<CR>", silent = true, desc = "Recent files" },
       { "<leader>sh", ":Telescope help_tags<CR>", silent = true, desc = "Help" },
       { "<leader>sk", ":Telescope keymaps<CR>", silent = true, desc = "Keymaps" },
