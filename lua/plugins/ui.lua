@@ -247,7 +247,7 @@ return {
       { "<C-\\>", desc = "Terminal float", mode = { "n", "t" } }, -- 实际映射由 open_mapping 注册，此处仅触发懒加载
       { "<leader>tv", ":ToggleTerm direction=vertical size=70<CR>", silent = true, desc = "Terminal vertical" },
       -- 与 lvim 对齐：<leader>gg 全屏展开 lazygit。
-      -- 仓库根取自当前文件（.git 上溯，无名 buffer 回退 cwd），按根缓存实例：
+      -- 开在当前文件所属仓库（root-pin.git_root），按仓库根缓存实例：
       -- 跨项目 buffer 各开各的 lazygit，界面状态互不干扰
       {
         "<leader>gg",
@@ -262,8 +262,7 @@ return {
               return
             end
           end
-          local file = vim.api.nvim_buf_get_name(0)
-          local dir = (file ~= "" and vim.fs.root(file, ".git")) or vim.fn.getcwd()
+          local dir = require("root-pin").git_root()
           local term = terms[dir]
           if not term then
             term = require("toggleterm.terminal").Terminal:new({

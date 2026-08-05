@@ -1,3 +1,19 @@
+-- 主搜索键以当前文件所属项目为根（root-pin 解析，cwd 锚点不动），
+-- prompt 标题带上根路径，检索范围一目了然
+local function project_picker(name, title)
+  return function()
+    local r = require("root-pin").root()
+    require("telescope.builtin")[name]({ cwd = r, prompt_title = title .. ": " .. vim.fn.fnamemodify(r, ":~") })
+  end
+end
+
+-- git picker 以当前文件所属仓库为根，与 <leader>gg 的 lazygit 同一语义
+local function repo_picker(name)
+  return function()
+    require("telescope.builtin")[name]({ cwd = require("root-pin").git_root() })
+  end
+end
+
 return {
   {
     "nvim-telescope/telescope.nvim",
@@ -11,27 +27,11 @@ return {
     },
     cmd = "Telescope",
     keys = {
-      -- 主搜索键跟随当前文件所属项目（root-pin 解析；cwd 锚点不受影响）：
-      -- 工作项目内行为不变，浏览依赖包/外部项目文件时即搜该项目
-      {
-        "<leader>f",
-        function()
-          local r = require("root-pin").root()
-          require("telescope.builtin").find_files({ cwd = r, prompt_title = "Files: " .. vim.fn.fnamemodify(r, ":~") })
-        end,
-        silent = true,
-        desc = "Find files",
-      },
+      -- 主搜索键跟随当前文件所属项目：工作项目内行为不变，
+      -- 浏览依赖包/外部项目文件时即搜该项目
+      { "<leader>f", project_picker("find_files", "Files"), silent = true, desc = "Find files" },
       { "<leader>b", ":Telescope buffers<CR>", silent = true, desc = "Buffers" },
-      {
-        "<leader>st",
-        function()
-          local r = require("root-pin").root()
-          require("telescope.builtin").live_grep({ cwd = r, prompt_title = "Grep: " .. vim.fn.fnamemodify(r, ":~") })
-        end,
-        silent = true,
-        desc = "Grep text",
-      },
+      { "<leader>st", project_picker("live_grep", "Grep"), silent = true, desc = "Grep text" },
       {
         "<leader>sa",
         function()
@@ -58,10 +58,10 @@ return {
         silent = true,
         desc = "Colorscheme with preview",
       },
-      { "<leader>go", ":Telescope git_status<CR>", silent = true, desc = "Open changed file" },
-      { "<leader>gb", ":Telescope git_branches<CR>", silent = true, desc = "Checkout branch" },
-      { "<leader>gc", ":Telescope git_commits<CR>", silent = true, desc = "Checkout commit" },
-      { "<leader>gC", ":Telescope git_bcommits<CR>", silent = true, desc = "Checkout commit (current file)" },
+      { "<leader>go", repo_picker("git_status"), silent = true, desc = "Open changed file" },
+      { "<leader>gb", repo_picker("git_branches"), silent = true, desc = "Checkout branch" },
+      { "<leader>gc", repo_picker("git_commits"), silent = true, desc = "Checkout commit" },
+      { "<leader>gC", repo_picker("git_bcommits"), silent = true, desc = "Checkout commit (current file)" },
     },
     config = function()
       local t_actions = require("telescope.actions")
