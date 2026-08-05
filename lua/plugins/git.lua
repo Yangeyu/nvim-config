@@ -23,6 +23,9 @@ return {
   {
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+    -- 勿包 root-pin.git_root：diffview 解析仓库的候选顺序本就是
+    -- path 参数 → 当前 buffer 文件 → cwd（vcs/adapters/git/init.lua 的
+    -- get_repo_paths），与 git_root 语义逐条一致，包了纯属冗余
     keys = {
       { "<leader>gv", ":DiffviewOpen<CR>", silent = true, desc = "Diffview" },
       { "<leader>gh", ":DiffviewFileHistory %<CR>", silent = true, desc = "File history" },
