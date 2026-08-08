@@ -30,5 +30,15 @@ return {
       { "<leader>gv", ":DiffviewOpen<CR>", silent = true, desc = "Diffview" },
       { "<leader>gh", ":DiffviewFileHistory %<CR>", silent = true, desc = "File history" },
     },
+    -- diffview 默认没有关闭键（q 只绑在 option/help 浮窗），只能敲 :DiffviewClose；
+    -- 补 q 一键退出，与 help/qf 等辅助窗口的 q 语义一致。
+    -- 仅在 diffview 的 tab 内覆盖，代价是这些窗口里不能录宏
+    opts = {
+      keymaps = {
+        view = { { "n", "q", "<Cmd>DiffviewClose<CR>", { desc = "Close Diffview" } } },
+        file_panel = { { "n", "q", "<Cmd>DiffviewClose<CR>", { desc = "Close Diffview" } } },
+        file_history_panel = { { "n", "q", "<Cmd>DiffviewClose<CR>", { desc = "Close Diffview" } } },
+      },
+    },
   },
 }
