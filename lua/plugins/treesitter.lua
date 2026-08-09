@@ -1,7 +1,21 @@
 -- treesitter 用 master 分支（经典 configs API）：与 yati/textobjects 的成熟组合，
 -- 三者版本同步于各自 master 最新（master 已冻结，组合固定不再漂移）。
 -- 迁移到 main 分支重写版留待生态稳定后单独评估。
+
 return {
+  -- AST 父级跳转 motion（自研，见插件 README：行级心智模型，[ 起点 / ] 终点）
+  {
+    "Yangeyu/ast-motions.nvim",
+    -- 本地开发时切换：dir = vim.fn.expand("~/Workplace/vim-plugins/ast-motions.nvim"),
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    keys = {
+      { "[u", function() require("ast-motions").parent_start() end, mode = { "n", "x", "o" }, desc = "Parent node start" },
+      { "]u", function() require("ast-motions").parent_end() end, mode = { "n", "x", "o" }, desc = "Parent node end" },
+    },
+    -- 键位由本 spec 的 keys 管理（keymaps.lua 头注释的约定），插件不再自建
+    opts = { keymaps = false },
+  },
+
   {
     "nvim-treesitter/nvim-treesitter",
     branch = "master",
