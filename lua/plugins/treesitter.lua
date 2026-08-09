@@ -8,9 +8,11 @@ return {
     "Yangeyu/ast-motions.nvim",
     -- 本地开发时切换：dir = vim.fn.expand("~/Workplace/vim-plugins/ast-motions.nvim"),
     dependencies = { "nvim-treesitter/nvim-treesitter" },
+    -- 用 [d/]d 而非插件默认的 [u/]u：双手交替更顺。原生的 [d/]d 诊断跳转
+    -- 被有意遮蔽——诊断导航走 <leader>lj/lk（lsp.lua），此键在本配置闲置
     keys = {
-      { "[u", function() require("ast-motions").parent_start() end, mode = { "n", "x", "o" }, desc = "Parent node start" },
-      { "]u", function() require("ast-motions").parent_end() end, mode = { "n", "x", "o" }, desc = "Parent node end" },
+      { "[d", function() require("ast-motions").parent_start() end, mode = { "n", "x", "o" }, desc = "Parent node start" },
+      { "]d", function() require("ast-motions").parent_end() end, mode = { "n", "x", "o" }, desc = "Parent node end" },
     },
     -- 键位由本 spec 的 keys 管理（keymaps.lua 头注释的约定），插件不再自建
     opts = { keymaps = false },
