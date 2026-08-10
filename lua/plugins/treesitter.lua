@@ -13,9 +13,11 @@ return {
     keys = {
       { "[e", function() require("ast-motions").parent_start() end, mode = { "n", "x", "o" }, desc = "Parent node start" },
       { "]e", function() require("ast-motions").parent_end() end, mode = { "n", "x", "o" }, desc = "Parent node end" },
-      -- 兄弟节点跳转：多行子树视作一项；跨层用 [e 回父级后再跳
-      { "[n", function() require("ast-motions").sibling_prev() end, mode = { "n", "x", "o" }, desc = "Prev sibling node" },
-      { "]n", function() require("ast-motions").sibling_next() end, mode = { "n", "x", "o" }, desc = "Next sibling node" },
+      -- 兄弟节点跳转（structural next）：多行子树视作一项；跨层用 [e 回父级后再跳。
+      -- 全局 [[/]] = AST 兄弟；markdown/python 等 ftplugin 的 buffer-local
+      -- 特化（跳标题/顶层 def）会按 vim 规则压过全局——视作同一动作的领域特化
+      { "[[", function() require("ast-motions").sibling_prev() end, mode = { "n", "x", "o" }, desc = "Prev sibling node" },
+      { "]]", function() require("ast-motions").sibling_next() end, mode = { "n", "x", "o" }, desc = "Next sibling node" },
     },
     -- 键位由本 spec 的 keys 管理（keymaps.lua 头注释的约定），插件不再自建
     opts = { keymaps = false },
