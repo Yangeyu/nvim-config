@@ -67,9 +67,19 @@ map("n", "<leader>Nu", ":Lazy update<CR>", { desc = "Update plugins", silent = t
 -- 这里先把窗口切到轮换 buffer（上一个浏览的），再删目标 buffer
 map("n", "<leader>c", function()
   local buf = vim.api.nvim_get_current_buf()
+  local force = false
   if vim.bo[buf].modified then
-    vim.notify("Unsaved changes: :w to save or :bd! to force close", vim.log.levels.WARN)
-    return
+    if vim.api.nvim_buf_get_name(buf) == "" then
+      -- 无名 buffer 没有 :w 可言（E32），提示指路是死胡同：确认后直接丢弃。
+      -- 默认停在 Cancel，误触回车不会丢内容
+      if vim.fn.confirm("Discard unnamed buffer?", "&Discard\n&Cancel", 2) ~= 1 then
+        return
+      end
+      force = true
+    else
+      vim.notify("Unsaved changes: :w to save or :bd! to force close", vim.log.levels.WARN)
+      return
+    end
   end
   for _, win in ipairs(vim.fn.win_findbuf(buf)) do
     vim.api.nvim_win_call(win, function()
@@ -81,7 +91,7 @@ map("n", "<leader>c", function()
       end
     end)
   end
-  vim.cmd.bdelete(buf)
+  vim.cmd.bdelete({ args = { tostring(buf) }, bang = force })
 end, { desc = "Close buffer", silent = true })
 
 -- 开关底部列表窗口（对齐 lvim 的 QuickFixToggle）：
