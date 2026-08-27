@@ -1,9 +1,30 @@
 -- 主搜索键以当前文件所属项目为根（root-pin 解析，cwd 锚点不动），
 -- prompt 标题带上根路径，检索范围一目了然
+local function project_options(title)
+  local r = require("root-pin").root()
+  return { cwd = r, prompt_title = title .. ": " .. vim.fn.fnamemodify(r, ":~") }
+end
+
 local function project_picker(name, title)
   return function()
-    local r = require("root-pin").root()
-    require("telescope.builtin")[name]({ cwd = r, prompt_title = title .. ": " .. vim.fn.fnamemodify(r, ":~") })
+    require("telescope.builtin")[name](project_options(title))
+  end
+end
+
+-- Git 项目由索引决定文件集合；被上层仓库忽略的依赖包和非 Git 项目回退文件系统。
+-- check-ignore: 0=当前项目根被忽略，1=未被忽略；其他错误同样安全回退。
+local function project_files()
+  local opts = project_options("Files")
+  local has_git_root = vim.fs.root(opts.cwd, ".git") ~= nil
+  local is_git_managed = has_git_root
+    and vim.system({ "git", "-C", opts.cwd, "check-ignore", "--quiet", "--", "." }):wait().code == 1
+
+  if is_git_managed then
+    opts.show_untracked = true
+    opts.use_git_root = false
+    require("telescope.builtin").git_files(opts)
+  else
+    require("telescope.builtin").find_files(opts)
   end
 end
 
@@ -29,7 +50,7 @@ return {
     keys = {
       -- 主搜索键跟随当前文件所属项目：工作项目内行为不变，
       -- 浏览依赖包/外部项目文件时即搜该项目
-      { "<leader>f", project_picker("find_files", "Files"), silent = true, desc = "Find files" },
+      { "<leader>f", project_files, silent = true, desc = "Find files" },
       { "<leader>b", ":Telescope buffers<CR>", silent = true, desc = "Buffers" },
       { "<leader>st", project_picker("live_grep", "Grep"), silent = true, desc = "Grep text" },
       {
@@ -78,6 +99,13 @@ return {
               ["J"] = t_actions.preview_scrolling_down,
               ["K"] = t_actions.preview_scrolling_up,
             },
+          },
+        },
+        pickers = {
+          -- 文件检索包含 .dockerignore/.env.example 等点文件，仍遵守 ignore 规则；
+          -- 显式排除 .git 元数据，避免 --hidden 把对象库也纳入结果。
+          find_files = {
+            find_command = { "rg", "--files", "--color", "never", "--hidden", "--glob", "!.git" },
           },
         },
         extensions = {
