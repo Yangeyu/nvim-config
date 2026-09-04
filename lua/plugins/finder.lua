@@ -35,6 +35,9 @@ local function repo_picker(name)
   end
 end
 
+-- 文件检索保留足以区分结果的最近路径；超出窗口时从左侧截断，确保文件名可见。
+local file_path_display = { "smart", "truncate" }
+
 return {
   {
     "nvim-telescope/telescope.nvim",
@@ -102,10 +105,14 @@ return {
           },
         },
         pickers = {
+          git_files = {
+            path_display = file_path_display,
+          },
           -- 文件检索包含 .dockerignore/.env.example 等点文件，仍遵守 ignore 规则；
           -- 显式排除 .git 元数据，避免 --hidden 把对象库也纳入结果。
           find_files = {
             find_command = { "rg", "--files", "--color", "never", "--hidden", "--glob", "!.git" },
+            path_display = file_path_display,
           },
         },
         extensions = {
