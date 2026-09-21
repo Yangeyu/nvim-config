@@ -7,6 +7,12 @@ return {
     ft = "markdown",
     dependencies = "nvim-treesitter/nvim-treesitter",
     opts = {
+      -- 渲染和源码编辑时均软换行，由插件统一管理 Markdown 窗口选项。
+      win_options = {
+        wrap = { default = true, rendered = true },
+        linebreak = { default = true, rendered = true },
+        breakindent = { default = true, rendered = true },
+      },
       code = {
         disable_background = true,
         language_border = " ", -- 语言标签行默认用实心块 █ 填满整行
